@@ -17,8 +17,8 @@ public class DiscountCardServiceImpl implements DiscountCardService {
     private void loadDiscountCards(String filePath) {
         CsvUtils csvUtils = new CsvUtilsImpl();
         List<String[]> lines = csvUtils.readCSV(filePath);
-            for (int i = 1; i < lines.size(); i++){
-                String[] line = lines.get(i);
+        for (int i = 1; i < lines.size(); i++) {
+            String[] line = lines.get(i);
             int id = Integer.parseInt(line[0]);
             String number = line[1];
             double discountAmount = Double.parseDouble(line[2]);
@@ -30,7 +30,7 @@ public class DiscountCardServiceImpl implements DiscountCardService {
         }
     }
 
-    public Set<String> getDiscountCardNumbers(){
+    public Set<String> getDiscountCardNumbers() {
         return Collections.unmodifiableSet(discountCards.keySet());
     }
 

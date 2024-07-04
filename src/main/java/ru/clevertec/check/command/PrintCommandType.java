@@ -9,13 +9,13 @@ public enum PrintCommandType {
     NOT_ENOUGH_MONEY(new PrintNonEnoughMoney()),
     INTERNAL_SERVER_ERROR(new InternalServerError());
 
-    final PrintCommand printCommand;
+    final PrintErrorCommand printCommand;
 
-    PrintCommandType(PrintCommand printCommand){
+    PrintCommandType(PrintErrorCommand printCommand) {
         this.printCommand = printCommand;
     }
 
-    public static PrintCommand define(PrintCommandType type){
+    public static PrintErrorCommand define(PrintCommandType type) {
         return type.printCommand;
     }
 }

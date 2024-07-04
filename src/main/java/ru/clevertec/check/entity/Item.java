@@ -1,10 +1,12 @@
 package ru.clevertec.check.entity;
 
-import lombok.*;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
 import ru.clevertec.check.util.CustomRound;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 
 @Getter
 @ToString
