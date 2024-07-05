@@ -24,5 +24,6 @@ public class CheckRunner {
 
         checkService.processArgs(args);
         checkService.calculateTotalSum();
+
     }
 }

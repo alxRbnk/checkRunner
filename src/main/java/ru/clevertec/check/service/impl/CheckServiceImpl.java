@@ -1,6 +1,5 @@
 package ru.clevertec.check.service.impl;
 
-import lombok.extern.log4j.Log4j2;
 import ru.clevertec.check.CheckRunner;
 import ru.clevertec.check.command.ErrorMessages;
 import ru.clevertec.check.command.PrintCommandType;
@@ -24,7 +23,6 @@ import java.util.List;
 
 import static ru.clevertec.check.command.PrintCommandType.*;
 
-@Log4j2
 public class CheckServiceImpl implements CheckService {
     private final ProductService productService;
     private final DiscountCardService discountCardService;
@@ -139,15 +137,15 @@ public class CheckServiceImpl implements CheckService {
     }
 
     private void printCheckToConsole() {
-        log.info("Check:");
+        System.out.println("Check:");
         for (Item item : getItems()) {
-            log.info(item.getProduct().getDescription() + " - "
+            System.out.println(item.getProduct().getDescription() + " - "
                     + item.getQuantity() + " pcs. - " + item.getTotalPrice() + " $");
         }
-        log.info("Total amount: " + getTotalSum() + " $");
-        log.info("Discount: " + getTotalDiscount() + " $");
-        log.info("Total sum with discount: " + getTotalSum().subtract(getTotalDiscount()) + "$");
-        log.info("Current balance: " + getBalanceDebitCard());
+        System.out.println("Total amount: " + getTotalSum() + " $");
+        System.out.println("Discount: " + getTotalDiscount() + " $");
+        System.out.println("Total sum with discount: " + getTotalSum().subtract(getTotalDiscount()) + "$");
+        System.out.println("Current balance: " + getBalanceDebitCard());
     }
 
     private void printCheckToCsv() {
