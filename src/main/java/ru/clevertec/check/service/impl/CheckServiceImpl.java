@@ -160,7 +160,8 @@ public class CheckServiceImpl implements CheckService {
             for (Item item : getItems()) {
                 writer.append(String.valueOf(item.getQuantity())).append(";")
                         .append(item.getProduct().getDescription()).append(";")
-                        .append(CustomRound.round(item.getProduct().getPrice()) + "$").append(";")
+                        .append(CustomRound.round(item.getProduct().getPrice()) + "$")
+                        .append(";")
                         .append(getItemDiscount(item) + "$").append(";")
                         .append(CustomRound.round(item.getProduct().getPrice()
                                 .multiply(BigDecimal.valueOf(item.getQuantity()))) + "$")
@@ -179,7 +180,8 @@ public class CheckServiceImpl implements CheckService {
                     .append(getTotalSum().subtract(getTotalDiscount()) + "$");
         } catch (IOException e) {
             PrintCommandType.define(INTERNAL_SERVER_ERROR).execute();
-            throw new RuntimeException(ErrorMessages.ERROR_WRITING + CheckRunner.WRITE_CHECK_PATH, e);
+            throw new RuntimeException(ErrorMessages.ERROR_WRITING +
+                    CheckRunner.WRITE_CHECK_PATH, e);
         }
     }
 }
