@@ -65,8 +65,57 @@ public class CheckServiceImpl implements CheckService {
             throw new IllegalArgumentException(ErrorMessages.NOT_ENOUGH_MONEY);
         }
         balanceDebitCard = balanceDebitCard.subtract(totalSumWithDiscount);
-        printCheckToCsv();
-        printCheckToConsole();
+    }
+
+    public void printCheckToConsole() {
+        log.info("Check:");
+        for (Item item : getItems()) {
+            log.info(item.getProduct().getDescription() + " - "
+                    + item.getQuantity() + " pcs. - " + item.getTotalPrice() + " $");
+        }
+        log.info("Total amount: " + getTotalSum() + " $");
+        log.info("Discount: " + getTotalDiscount() + " $");
+        log.info("Total sum with discount: " + getTotalSum().subtract(getTotalDiscount()) + "$");
+        log.info("Current balance: " + getBalanceDebitCard());
+    }
+
+    public void printCheckToCsv(){
+        printCheckToCsv(CheckRunner.DEFAULT_CHECK_PATH);
+    }
+
+    public void printCheckToCsv(String path) {
+        String formattedDate = LocalDate.now().format(DateTimeFormatter.ofPattern("dd.MM.yy"));
+        String formattedTime = LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
+        try (FileWriter writer = new FileWriter(path)) {
+            writer.append("Date;Time\n")
+                    .append(formattedDate).append(";").append(formattedTime).append("\n\n")
+                    .append("QTY;DESCRIPTION;PRICE;DISCOUNT;TOTAL\n");
+            for (Item item : getItems()) {
+                writer.append(String.valueOf(item.getQuantity())).append(";")
+                        .append(item.getProduct().getDescription()).append(";")
+                        .append(CustomRound.round(item.getProduct().getPrice()) + "$")
+                        .append(";")
+                        .append(getItemDiscount(item) + "$").append(";")
+                        .append(CustomRound.round(item.getProduct().getPrice()
+                                .multiply(BigDecimal.valueOf(item.getQuantity()))) + "$")
+                        .append("\n");
+            }
+            if (discountCard != null) {
+                writer.append("\n")
+                        .append("DISCOUNT CARD;DISCOUNT PERCENTAGE\n")
+                        .append(discountCard.getNumber()).append(";")
+                        .append((int) discountCard.getDiscountAmount() + "%\n");
+            }
+            writer.append("\n")
+                    .append("TOTAL PRICE;TOTAL DISCOUNT;TOTAL WITH DISCOUNT\n")
+                    .append(getTotalSum() + "$").append(";")
+                    .append(getTotalDiscount() + "$").append(";")
+                    .append(getTotalSum().subtract(getTotalDiscount()) + "$");
+        } catch (IOException e) {
+            PrintCommandType.define(INTERNAL_SERVER_ERROR).execute();
+            throw new RuntimeException(ErrorMessages.ERROR_WRITING +
+                    path, e);
+        }
     }
 
     private List<Item> getItems() {
@@ -138,50 +187,6 @@ public class CheckServiceImpl implements CheckService {
         this.balanceDebitCard = balanceDebitCard;
     }
 
-    private void printCheckToConsole() {
-        log.info("Check:");
-        for (Item item : getItems()) {
-            log.info(item.getProduct().getDescription() + " - "
-                    + item.getQuantity() + " pcs. - " + item.getTotalPrice() + " $");
-        }
-        log.info("Total amount: " + getTotalSum() + " $");
-        log.info("Discount: " + getTotalDiscount() + " $");
-        log.info("Total sum with discount: " + getTotalSum().subtract(getTotalDiscount()) + "$");
-        log.info("Current balance: " + getBalanceDebitCard());
-    }
 
-    private void printCheckToCsv() {
-        String formattedDate = LocalDate.now().format(DateTimeFormatter.ofPattern("dd.MM.yy"));
-        String formattedTime = LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
-        try (FileWriter writer = new FileWriter(CheckRunner.WRITE_CHECK_PATH)) {
-            writer.append("Date;Time\n")
-                    .append(formattedDate).append(";").append(formattedTime).append("\n\n")
-                    .append("QTY;DESCRIPTION;PRICE;DISCOUNT;TOTAL\n");
-            for (Item item : getItems()) {
-                writer.append(String.valueOf(item.getQuantity())).append(";")
-                        .append(item.getProduct().getDescription()).append(";")
-                        .append(CustomRound.round(item.getProduct().getPrice()) + "$")
-                        .append(";")
-                        .append(getItemDiscount(item) + "$").append(";")
-                        .append(CustomRound.round(item.getProduct().getPrice()
-                                .multiply(BigDecimal.valueOf(item.getQuantity()))) + "$")
-                        .append("\n");
-            }
-            if (discountCard != null) {
-                writer.append("\n")
-                        .append("DISCOUNT CARD;DISCOUNT PERCENTAGE\n")
-                        .append(discountCard.getNumber()).append(";")
-                        .append((int) discountCard.getDiscountAmount() + "%\n");
-            }
-            writer.append("\n")
-                    .append("TOTAL PRICE;TOTAL DISCOUNT;TOTAL WITH DISCOUNT\n")
-                    .append(getTotalSum() + "$").append(";")
-                    .append(getTotalDiscount() + "$").append(";")
-                    .append(getTotalSum().subtract(getTotalDiscount()) + "$");
-        } catch (IOException e) {
-            PrintCommandType.define(INTERNAL_SERVER_ERROR).execute();
-            throw new RuntimeException(ErrorMessages.ERROR_WRITING +
-                    CheckRunner.WRITE_CHECK_PATH, e);
-        }
-    }
 }
+

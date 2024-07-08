@@ -1,5 +1,6 @@
 package ru.clevertec.check.util.impl;
 
+import ru.clevertec.check.command.ErrorMessages;
 import ru.clevertec.check.util.CsvUtils;
 
 import java.io.BufferedReader;
@@ -18,7 +19,7 @@ public class CsvUtilsImpl implements CsvUtils {
                 lines.add(line.split(";"));
             }
         } catch (IOException e) {
-            throw new RuntimeException("Error when reading a file " + filePath, e);
+            throw new RuntimeException(ErrorMessages.ERROR_WRITING + filePath, e);
         }
         return lines;
     }

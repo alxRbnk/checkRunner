@@ -8,14 +8,21 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 public class InternalServerError implements PrintErrorCommand, ErrorMessages {
+
     @Override
     public void execute() {
-        try (FileWriter writer = new FileWriter(CheckRunner.WRITE_CHECK_PATH)) {
+        execute(CheckRunner.DEFAULT_CHECK_PATH);
+    }
+
+    @Override
+    public void execute(String path) {
+        try (FileWriter writer = new FileWriter(path)) {
             writer.append(ERROR)
                     .append("\n\n")
                     .append(SERVER_ERROR);
         } catch (IOException e) {
-            throw new RuntimeException(ERROR_WRITING + CheckRunner.WRITE_CHECK_PATH, e);
+            throw new RuntimeException(ERROR_WRITING + path, e);
         }
     }
 }
+

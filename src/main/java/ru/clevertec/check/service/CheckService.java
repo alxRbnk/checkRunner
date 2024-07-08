@@ -6,4 +6,10 @@ public interface CheckService {
 
     void processArgs(String[] args);
 
+    void printCheckToCsv();
+
+    void printCheckToCsv(String path);
+
+    void printCheckToConsole();
+
 }
