@@ -9,6 +9,9 @@ public interface ValidateRegex {
     String BALANCE_REGEX = "balanceDebitCard=-?[0-9]+(\\.[0-9]{1,2})?$";
     String PATH_TO_FILE_REGEX = "pathToFile=.+\\.csv$";
     String SAVE_TO_FILE_REGEX = "saveToFile=.+\\.csv$";
+    String DB_URL_REGEX = "datasource.url=.+";
+    String DB_USER_NAME_REGEX = "datasource.username=.+";
+    String DB_PASSWORD_REGEX = "datasource.password=.+";
 
     static boolean validateArgs(String line, String regex) {
         boolean flag = false;

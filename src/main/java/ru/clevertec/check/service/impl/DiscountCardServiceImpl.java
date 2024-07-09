@@ -1,17 +1,38 @@
 package ru.clevertec.check.service.impl;
 
+import ru.clevertec.check.dao.DiscountCardDao;
+import ru.clevertec.check.dao.impl.DiscountCardDaoImpl;
 import ru.clevertec.check.entity.DiscountCard;
 import ru.clevertec.check.service.DiscountCardService;
 import ru.clevertec.check.util.CsvUtils;
 import ru.clevertec.check.util.impl.CsvUtilsImpl;
 
+import java.sql.Connection;
 import java.util.*;
 
 public class DiscountCardServiceImpl implements DiscountCardService {
-    private final Map<String, DiscountCard> discountCards = new HashMap<>();
+    private Map<String, DiscountCard> discountCards = new HashMap<>();
+    private Connection connection;
 
     public DiscountCardServiceImpl(String discountCardFilePath) {
         loadDiscountCards(discountCardFilePath);
+    }
+
+    public DiscountCardServiceImpl(Connection connection) {
+        this.connection = connection;
+    }
+
+    public void loadDiscountCardsFromDb() {
+        DiscountCardDao discountCardDao = DiscountCardDaoImpl.getInstance();
+        discountCards = discountCardDao.getAll(connection);
+    }
+
+    public Set<String> getDiscountCardNumbers() {
+        return Collections.unmodifiableSet(discountCards.keySet());
+    }
+
+    public DiscountCard getDiscountCardByNumber(String number) {
+        return discountCards.get(number);
     }
 
     private void loadDiscountCards(String filePath) {
@@ -28,13 +49,5 @@ public class DiscountCardServiceImpl implements DiscountCardService {
                     .discountAmount(discountAmount)
                     .build());
         }
-    }
-
-    public Set<String> getDiscountCardNumbers() {
-        return Collections.unmodifiableSet(discountCards.keySet());
-    }
-
-    public DiscountCard getDiscountCardByNumber(String number) {
-        return discountCards.get(number);
     }
 }

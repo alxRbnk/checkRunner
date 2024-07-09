@@ -8,4 +8,6 @@ public interface DiscountCardService {
     DiscountCard getDiscountCardByNumber(String number);
 
     Set<String> getDiscountCardNumbers();
+
+    void loadDiscountCardsFromDb();
 }

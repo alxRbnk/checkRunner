@@ -8,6 +8,8 @@ import ru.clevertec.check.service.impl.CheckServiceImpl;
 import ru.clevertec.check.service.impl.DiscountCardServiceImpl;
 import ru.clevertec.check.service.impl.ProductServiceImpl;
 
+import java.sql.Connection;
+
 public enum ServiceFactoryImpl implements ServiceFactory {
     INSTANCE;
 
@@ -24,5 +26,15 @@ public enum ServiceFactoryImpl implements ServiceFactory {
     @Override
     public CheckService createCheckService(ProductService productService, DiscountCardService discountCardService) {
         return new CheckServiceImpl(productService, discountCardService);
+    }
+
+    @Override
+    public ProductService createProductServiceDb(Connection connection) {
+        return new ProductServiceImpl(connection);
+    }
+
+    @Override
+    public DiscountCardService createDiscountCardServiceDb(Connection connection) {
+        return new DiscountCardServiceImpl(connection);
     }
 }

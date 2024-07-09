@@ -1,20 +1,37 @@
 package ru.clevertec.check.service.impl;
 
+import ru.clevertec.check.dao.ProductDao;
+import ru.clevertec.check.dao.impl.ProductDaoImpl;
 import ru.clevertec.check.entity.Product;
 import ru.clevertec.check.service.ProductService;
 import ru.clevertec.check.util.CsvUtils;
 import ru.clevertec.check.util.impl.CsvUtilsImpl;
 
 import java.math.BigDecimal;
+import java.sql.Connection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class ProductServiceImpl implements ProductService {
-    private final Map<Integer, Product> products = new HashMap<>();
+    private Map<Integer, Product> products = new HashMap<>();
+    private Connection connection;
 
     public ProductServiceImpl(String productFilePath) {
         loadProducts(productFilePath);
+    }
+
+    public ProductServiceImpl(Connection connection) {
+        this.connection = connection;
+    }
+
+    public Product getProductById(int id) {
+        return products.get(id);
+    }
+
+    public void loadProductFromDb() {
+        ProductDao productDao = ProductDaoImpl.getInstance();
+        products = productDao.getAll(connection);
     }
 
     private void loadProducts(String filePath) {
@@ -35,9 +52,5 @@ public class ProductServiceImpl implements ProductService {
                     .isWholesale(isWholesale)
                     .build());
         }
-    }
-
-    public Product getProductById(int id) {
-        return products.get(id);
     }
 }

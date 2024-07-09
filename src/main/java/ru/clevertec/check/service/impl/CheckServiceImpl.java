@@ -1,6 +1,5 @@
 package ru.clevertec.check.service.impl;
 
-import lombok.extern.log4j.Log4j2;
 import ru.clevertec.check.CheckRunner;
 import ru.clevertec.check.command.ErrorMessages;
 import ru.clevertec.check.command.PrintCommandType;
@@ -24,7 +23,6 @@ import java.util.List;
 
 import static ru.clevertec.check.command.PrintCommandType.*;
 
-@Log4j2
 public class CheckServiceImpl implements CheckService {
     private final ProductService productService;
     private final DiscountCardService discountCardService;
@@ -68,18 +66,18 @@ public class CheckServiceImpl implements CheckService {
     }
 
     public void printCheckToConsole() {
-        log.info("Check:");
+        System.out.println("Check:");
         for (Item item : getItems()) {
-            log.info(item.getProduct().getDescription() + " - "
+            System.out.println(item.getProduct().getDescription() + " - "
                     + item.getQuantity() + " pcs. - " + item.getTotalPrice() + " $");
         }
-        log.info("Total amount: " + getTotalSum() + " $");
-        log.info("Discount: " + getTotalDiscount() + " $");
-        log.info("Total sum with discount: " + getTotalSum().subtract(getTotalDiscount()) + "$");
-        log.info("Current balance: " + getBalanceDebitCard());
+        System.out.println("Total amount: " + getTotalSum() + " $");
+        System.out.println("Discount: " + getTotalDiscount() + " $");
+        System.out.println("Total sum with discount: " + getTotalSum().subtract(getTotalDiscount()) + "$");
+        System.out.println("Current balance: " + getBalanceDebitCard());
     }
 
-    public void printCheckToCsv(){
+    public void printCheckToCsv() {
         printCheckToCsv(CheckRunner.DEFAULT_CHECK_PATH);
     }
 
@@ -95,7 +93,7 @@ public class CheckServiceImpl implements CheckService {
                         .append(item.getProduct().getDescription()).append(";")
                         .append(CustomRound.round(item.getProduct().getPrice()) + "$")
                         .append(";")
-                        .append(getItemDiscount(item) + "$").append(";")
+                        .append(CustomRound.round(getItemDiscount(item)) + "$").append(";")
                         .append(CustomRound.round(item.getProduct().getPrice()
                                 .multiply(BigDecimal.valueOf(item.getQuantity()))) + "$")
                         .append("\n");
@@ -117,8 +115,8 @@ public class CheckServiceImpl implements CheckService {
                     path, e);
         }
     }
-
-    private List<Item> getItems() {
+//private fixme
+    public List<Item> getItems() {
         return Collections.unmodifiableList(items);
     }
 
@@ -137,7 +135,7 @@ public class CheckServiceImpl implements CheckService {
         return totalDiscount;
     }
 
-    private BigDecimal getBalanceDebitCard() {
+    public BigDecimal getBalanceDebitCard() {
         return CustomRound.round(balanceDebitCard);
     }
 
@@ -159,7 +157,7 @@ public class CheckServiceImpl implements CheckService {
         return CustomRound.round(discount);
     }
 
-    private void addItem(int productId, int quantity) {
+    public void addItem(int productId, int quantity) {
         Product product = productService.getProductById(productId);
         if (product != null && product.getQuantityInStock() >= quantity) {
             items.add(Item.builder()
@@ -172,7 +170,7 @@ public class CheckServiceImpl implements CheckService {
         }
     }
 
-    private void applyDiscountCard(String discountCardNumber) {
+    public void applyDiscountCard(String discountCardNumber) {
         if (discountCardService.getDiscountCardNumbers().contains(discountCardNumber)) {
             this.discountCard = discountCardService.getDiscountCardByNumber(discountCardNumber);
         } else {
@@ -183,7 +181,7 @@ public class CheckServiceImpl implements CheckService {
         }
     }
 
-    private void setBalanceDebitCard(BigDecimal balanceDebitCard) {
+    public void setBalanceDebitCard(BigDecimal balanceDebitCard) {
         this.balanceDebitCard = balanceDebitCard;
     }
 
