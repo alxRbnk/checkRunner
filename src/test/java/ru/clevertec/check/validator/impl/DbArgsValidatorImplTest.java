@@ -45,7 +45,6 @@ public class DbArgsValidatorImplTest {
                 "datasource.url=jdbc:postgresql://localhost:5432/check",
                 "datasource.password=postgres"
         };
-
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
             DbArgsValidatorImpl.INSTANCE.validate(invalidArgs);
         });
